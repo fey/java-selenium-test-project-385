@@ -24,4 +24,35 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+
+    testLogging {
+        events("passed", "failed", "skipped")
+        showStandardStreams = false
+        showExceptions = true
+        showCauses = true
+        showStackTraces = false
+    }
+
+    addTestListener(object : TestListener {
+
+        override fun beforeSuite(suite: TestDescriptor) {}
+
+        override fun afterSuite(suite: TestDescriptor, result: TestResult) {}
+
+        override fun beforeTest(testDescriptor: TestDescriptor) {}
+
+        override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {
+            // игнорируем suite-узлы
+            if (testDescriptor.parent != null) {
+                val symbol = when (result.resultType) {
+                    TestResult.ResultType.SUCCESS -> "✔"
+                    TestResult.ResultType.FAILURE -> "✘"
+                    TestResult.ResultType.SKIPPED -> "○"
+                    else -> "?"
+                }
+
+                println("$symbol ${testDescriptor.className} > ${testDescriptor.name}")
+            }
+        }
+    })
 }

@@ -9,7 +9,11 @@ app-logs:
 	docker compose logs app
 
 test:
-	APP_BASE_URL=$(APP_BASE_URL) ./gradlew test
+	@APP_BASE_URL=$(APP_BASE_URL) ./gradlew clean test \
+	   --console=plain \
+	   --rerun-tasks \
+	   --no-configuration-cache
+
 
 build:
 	./gradlew build -x test
